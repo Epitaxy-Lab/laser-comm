@@ -49,6 +49,7 @@ int main(void){
         cout << "Enter message: ";
         string message;
         std::getline(cin, message);
+        int read;
         //cin >> noskipws >> message >> skipws;
         //cout << "\n";
         if(message == "x"){
@@ -59,10 +60,42 @@ int main(void){
         if(message[0] == 'o'){
             int timeon = message[2];
             send(sock, SHUTTER_OPEN.c_str(), SHUTTER_OPEN.length(), 0);
+            read = recv(sock, laser_comm, sizeof(laser_comm), 0);
+            if(read<0){
+                cout << "ERROR OPENING SHUTTER\n";
+                break;
+            } else {
+                cout << "Shutter opened. \n";
+            }
+
             //send(sock, LASER_ON.c_str(), LASER_ON.length(), 0);
+            // read = recv(sock, laser_comm, sizeof(laser_comm), 0);
+            // if(read<0){
+            //     cout << "ERROR CLOSING SHUTTER\n";
+            //     break;
+            // } else {
+            //     cout << "Shutter opened.\n";
+            // }
+            
             sleep(timeon);
+
             //send(sock, LASER_OFF.c_str(), LASER_OFF.length(), );
+            // read = recv(sock, laser_comm, sizeof(laser_comm), 0);
+            // if(read<0){
+            //     cout << "ERROR TURNING LASER OFF \n";
+            //     break;
+            // } else {
+            //     cout << "Shutter opened. \n";
+            // }
+
             send(sock, SHUTTER_CLOSE.c_str(), SHUTTER_CLOSE.length(), 0);
+            read = recv(sock, laser_comm, sizeof(laser_comm), 0);
+            if(read<0){
+                cout << "ERROR CLOSING SHUTTER\n";
+                break;
+            } else {
+                cout << "Shutter opened. \n";
+            }
             break;
         }
         message.append("\n");
@@ -74,7 +107,7 @@ int main(void){
             return -1;
         }
 
-        int read = recv(sock, laser_comm, sizeof(laser_comm), 0);
+        read = recv(sock, laser_comm, sizeof(laser_comm), 0);
 
         if(read < 0){
             cout << "Reception Failure.\n";
