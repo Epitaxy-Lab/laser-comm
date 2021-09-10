@@ -16,6 +16,13 @@ int main(void){
     struct sockaddr_in server_addr;
     char laser_comm[100];
 
+
+    string SHUTTER_OPEN = "sso 1";
+    string SHUTTER_CLOSE = "sso 0";
+    string LASER_ON = "sme 1";
+    string LASER_OFF = "sme 0";
+
+
     memset(laser_comm, '\0', sizeof(laser_comm));
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,7 +53,16 @@ int main(void){
         //cout << "\n";
         if(message == "x"){
             close(sock);
-            printf("Socket closed\n");  
+            printf("Socket closed\n");
+            break;
+        }
+        if(message[0] == 'o'){
+            int timeon = message[2];
+            send(sock, SHUTTER_OPEN.c_str(), SHUTTER_OPEN.length(), 0);
+            //send(sock, LASER_ON.c_str(), LASER_ON.length(), 0);
+            sleep(timeon);
+            //send(sock, LASER_OFF.c_str(), LASER_OFF.length(), );
+            send(sock, SHUTTER_CLOSE.c_str(), SHUTTER_CLOSE.length(), 0);
             break;
         }
         message.append("\n");
